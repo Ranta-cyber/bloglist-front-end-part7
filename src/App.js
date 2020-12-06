@@ -12,7 +12,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [passwordHash, setpasswordHash] = useState('')
   const [notification, setNotification] = useState(null)
 
   const blogFormRef = React.createRef()
@@ -41,16 +41,16 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password
+        username, passwordHash
       })
 
       setUsername('')
-      setPassword('')
+      setpasswordHash('')
       setUser(user)
       notifyWith(`${user.name} welcome back!`)
       storage.saveUser(user)
     } catch(exception) {
-      notifyWith('wrong username/password', 'error')
+      notifyWith('wrong username/passwordHash', 'error')
     }
   }
 
@@ -67,9 +67,9 @@ const App = () => {
 
   const handleLike = async (id) => {
     const blogToLike = blogs.find(b => b.id === id)
-    const likedBlog = { ...blogToLike, likes: blogToLike.likes + 1, user: blogToLike.user.id }
+    const likedBlog = { ...blogToLike, votes: blogToLike.votes + 1, user: blogToLike.user.id }
     await blogService.update(likedBlog)
-    setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, likes: blogToLike.likes + 1 } : b))
+    setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, votes: blogToLike.votes + 1 } : b))
   }
 
   const handleRemove = async (id) => {
@@ -103,11 +103,11 @@ const App = () => {
             />
           </div>
           <div>
-            password
+            passwordHash
             <input
-              id='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
+              id='passwordHash'
+              value={passwordHash}
+              onChange={({ target }) => setpasswordHash(target.value)}
             />
           </div>
           <button id='login'>login</button>
@@ -116,7 +116,7 @@ const App = () => {
     )
   }
 
-  const byLikes = (b1, b2) => b2.likes - b1.likes
+  const byvotes = (b1, b2) => b2.votes - b1.votes
 
   return (
     <div>
@@ -132,7 +132,7 @@ const App = () => {
         <NewBlog createBlog={createBlog} />
       </Togglable>
 
-      {blogs.sort(byLikes).map(blog =>
+      {blogs.sort(byvotes).map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
