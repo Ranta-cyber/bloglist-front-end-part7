@@ -7,15 +7,18 @@ import NewBlog from './components/blog_form'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
+import { useDispatch } from 'react-redux'
+import { showNotification } from './reducers/notificationReducer'
 
-const App = () => {
+const App = (props) => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [passwordHash, setpasswordHash] = useState('')
-  const [notification, setNotification] = useState(null)
+  //const [notification, setNotification] = useState(null)
 
   const blogFormRef = React.createRef()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -28,13 +31,9 @@ const App = () => {
     setUser(user)
   }, [])
 
-  const notifyWith = (message, type='success') => {
-    setNotification({
-      message, type
-    })
-    setTimeout(() => {
-      setNotification(null)
-    }, 5000)
+  const notifyWith = (message) => {
+    //console.log('notifyWith:', message)
+    dispatch(showNotification({message}))
   }
 
   const handleLogin = async (event) => {
@@ -70,6 +69,7 @@ const App = () => {
     const likedBlog = { ...blogToLike, votes: blogToLike.votes + 1, user: blogToLike.user.id }
     await blogService.update(likedBlog)
     setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, votes: blogToLike.votes + 1 } : b))
+    notifyWith(`a new like '${likedBlog.title}' by ${likedBlog.author} added!`)
   }
 
   const handleRemove = async (id) => {
@@ -91,7 +91,7 @@ const App = () => {
       <div>
         <h2>login to application</h2>
 
-        <Notification notification={notification} />
+        <Notification />
 
         <form onSubmit={handleLogin}>
           <div>
@@ -117,12 +117,11 @@ const App = () => {
   }
 
   const byvotes = (b1, b2) => b2.votes - b1.votes
-
+  
   return (
     <div>
       <h2>blogs</h2>
-
-      <Notification notification={notification} />
+      <Notification/>
 
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
