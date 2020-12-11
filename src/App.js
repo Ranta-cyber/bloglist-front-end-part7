@@ -7,24 +7,32 @@ import NewBlog from './components/blog_form'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
-import { useDispatch } from 'react-redux'
+import {initializeBlogs, createBlogReducer } from './reducers/blogReducer'
+import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
 
 const App = (props) => {
-  const [blogs, setBlogs] = useState([])
+
+  const blogs = useSelector(state => state.stateblog)
+
+  //const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [passwordHash, setpasswordHash] = useState('')
   //const [notification, setNotification] = useState(null)
 
   const blogFormRef = React.createRef()
-  const dispatch = useDispatch()
 
+  const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(initializeBlogs()) 
+  },[dispatch])
+
+  /* useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
-  }, [])
+  }, []) */
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -55,9 +63,12 @@ const App = (props) => {
 
   const createBlog = async (blog) => {
     try {
+
+      //console.log('createBlog appj:ssa:', blog)
       const newBlog = await blogService.create(blog)
       blogFormRef.current.toggleVisibility()
-      setBlogs(blogs.concat(newBlog))
+      //setBlogs(blogs.concat(newBlog))
+      dispatch(createBlogReducer(newBlog))
       notifyWith(`a new blog '${newBlog.title}' by ${newBlog.author} added!`)
     } catch(exception) {
       console.log(exception)
@@ -85,6 +96,8 @@ const App = (props) => {
     setUser(null)
     storage.logoutUser()
   }
+
+  console.log('blogs blogs:', blogs)
 
   if ( !user ) {
     return (
