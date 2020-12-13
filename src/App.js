@@ -7,18 +7,17 @@ import NewBlog from './components/blog_form'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
-import {initializeBlogs, createBlogReducer } from './reducers/blogReducer'
+import {initializeBlogs, createBlogReducer, voteBlog, removeBlog } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
 
 const App = (props) => {
 
-  const blogs = useSelector(state => state.stateblog)
 
   //const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
+   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
-  const [passwordHash, setpasswordHash] = useState('')
+  const [passwordHash, setpasswordHash] = useState('') 
   //const [notification, setNotification] = useState(null)
 
   const blogFormRef = React.createRef()
@@ -26,7 +25,11 @@ const App = (props) => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(initializeBlogs()) 
+    console.log('useEfectissa')
   },[dispatch])
+
+  const blogs = useSelector(state => state.stateblog)
+
 
   /* useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -78,8 +81,9 @@ const App = (props) => {
   const handleLike = async (id) => {
     const blogToLike = blogs.find(b => b.id === id)
     const likedBlog = { ...blogToLike, votes: blogToLike.votes + 1, user: blogToLike.user.id }
-    await blogService.update(likedBlog)
-    setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, votes: blogToLike.votes + 1 } : b))
+    dispatch(voteBlog(likedBlog))
+    //await blogService.update(likedBlog)
+    //setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, votes: blogToLike.votes + 1 } : b))
     notifyWith(`a new like '${likedBlog.title}' by ${likedBlog.author} added!`)
   }
 
@@ -87,8 +91,9 @@ const App = (props) => {
     const blogToRemove = blogs.find(b => b.id === id)
     const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
     if (ok) {
-      await blogService.remove(id)
-      setBlogs(blogs.filter(b => b.id !== id))
+      dispatch(removeBlog(id))
+      //await blogService.remove(id)
+      //setBlogs(blogs.filter(b => b.id !== id))
     }
   }
 

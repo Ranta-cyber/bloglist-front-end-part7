@@ -38,21 +38,30 @@ const reducerBlog = (state = [], action) => {
                     user: action.data.user,
                     id:action.data.id}
 
-                    console.log('blogi:', blogi)
+                    //console.log('blogi:', blogi)
       return [...state, blogi]
+
+      case 'REMOVE': {
+        console.log('action.data.id',action.data.id)
+        const id = action.data.id
+        return state.filter(b => b.id !== id)
+        
+      }
     
-     /*  case 'INCREMENT': {
-      const id = action.data.id
+     case 'INCREMENT': {
+       console.log('action data',action.data.content)
+      const id = action.data.content.id
       const blogToChange = state.find(n => n.id === id)
       const changedBlog = {
         ...blogToChange,
-        votes: blogToChange.votes
+        votes: action.data.content.votes
       }
+      console.log('changedBlog', changedBlog)
       return state.map(blog =>
         blog.id !== id ? blog : changedBlog
       )
+    } 
 
-    } */
     case 'FILTERING': {
       const filterText = action.data.toFilter
       return action.data
@@ -83,15 +92,26 @@ export const initializeBlogs = () => {
   }
 }
 
+export const removeBlog = (id) => {
+  
+  return async dispatch => {
+    
+    const removeBlog = await blogService.remove(id)
+    dispatch({
+      type: 'REMOVE',
+      data: { id }
+    })
+  }
+}
 
 export const voteBlog = (content) => {
-
+  console.log('voteBlog:', content)
   return async dispatch => {
-    const id = content.id
+    
     const updBlog = await blogService.update(content)
     dispatch({
       type: 'INCREMENT',
-      data: { id }
+      data: { content }
     })
   }
 }
