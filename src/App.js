@@ -10,14 +10,18 @@ import storage from './utils/storage'
 import {initializeBlogs, createBlogReducer, voteBlog, removeBlog } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
+import { initUser} from './reducers/userReducer'
+
+var username = null
+var passwordHash = null
 
 const App = (props) => {
 
 
   //const [blogs, setBlogs] = useState([])
-   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [passwordHash, setpasswordHash] = useState('') 
+   //const [user, setUser] = useState(null)
+  //const [username, setUsername] = useState('')
+  //const [passwordHash, setpasswordHash] = useState('') 
   //const [notification, setNotification] = useState(null)
 
   const blogFormRef = React.createRef()
@@ -30,7 +34,6 @@ const App = (props) => {
 
   const blogs = useSelector(state => state.stateblog)
 
-
   /* useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -39,7 +42,9 @@ const App = (props) => {
 
   useEffect(() => {
     const user = storage.loadUser()
-    setUser(user)
+    dispatch(initUser(user))
+    console.log('user is in effect:', user)
+    //setUser(user)
   }, [])
 
   const notifyWith = (message) => {
@@ -50,13 +55,18 @@ const App = (props) => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const user = await loginService.login({
-        username, passwordHash
-      })
 
-      setUsername('')
+      console.log('user try username:', username)
+      console.log('user try password:',passwordHash)
+
+      const user = await loginService.login({
+        username, passwordHash}
+      )
+      console.log('user:', user)
+      dispatch(initUser(user))
+      /* setUsername('')
       setpasswordHash('')
-      setUser(user)
+      setUser(user) */
       notifyWith(`${user.name} welcome back!`)
       storage.saveUser(user)
     } catch(exception) {
@@ -98,34 +108,35 @@ const App = (props) => {
   }
 
   const handleLogout = () => {
-    setUser(null)
+    //setUser(null)
+    dispatch(initUser(null))
     storage.logoutUser()
   }
 
   console.log('blogs blogs:', blogs)
-
-  if ( !user ) {
+  const user = useSelector(state => state.stateuser)
+  if ( !user)  {
     return (
       <div>
         <h2>login to application</h2>
 
         <Notification />
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} >
           <div>
             username
             <input
               id='username'
-              value={username}
-              onChange={({ target }) => setUsername(target.value)}
+              //value={username}
+              onChange={({ target }) => username = target.value}
             />
           </div>
           <div>
             passwordHash
             <input
               id='passwordHash'
-              value={passwordHash}
-              onChange={({ target }) => setpasswordHash(target.value)}
+              //value={passwordHash}
+              onChange={({ target }) => passwordHash = target.value}
             />
           </div>
           <button id='login'>login</button>

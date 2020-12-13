@@ -4,12 +4,14 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 //import reducerAnecdote, { initializeAnecdotes } from './reducers/anecdoteReducer'
 import reducerNotif from './reducers/notificationReducer'
 import reducerBlog from './reducers/blogReducer'
+import reducerUser from './reducers/userReducer'
 import thunk from 'redux-thunk'
 // import filterReducer from './reducers/filterReducer'
 
  const reducer = combineReducers(
   {stateblog: reducerBlog,
-  statenotif: reducerNotif}
+  statenotif: reducerNotif,
+  stateuser: reducerUser}
   //statefilter: filterReducer
  )
 const store = createStore(reducer, composeWithDevTools(applyMiddleware(thunk)))
