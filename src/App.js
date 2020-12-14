@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import NewBlog from './components/blog_form'
+import Users from './components/users'
+import userService from './services/users'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -23,6 +25,7 @@ const App = (props) => {
   //const [username, setUsername] = useState('')
   //const [passwordHash, setpasswordHash] = useState('') 
   //const [notification, setNotification] = useState(null)
+  const [users, setUsers] = useState([])
 
   const blogFormRef = React.createRef()
 
@@ -39,6 +42,12 @@ const App = (props) => {
       setBlogs(blogs)
     )
   }, []) */
+
+  useEffect(() => {
+    userService.getAll().then(users =>
+      setUsers(users))
+      console.log('users:', users)
+  }, [])
 
   useEffect(() => {
     const user = storage.loadUser()
@@ -155,6 +164,8 @@ const App = (props) => {
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
+
+      <Users users={users}/>
 
       <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
         <NewBlog createBlog={createBlog} />
