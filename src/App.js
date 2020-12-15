@@ -132,9 +132,10 @@ const App = (props) => {
           <Link style={padding} to="/blogs">blogs</Link>
           <Link style={padding} to="/users">users</Link>
           {user
-            ? <em>{user.name} logged in</em>
+            ? <em>{user.name} logged in </em>
             : <Link style={padding} to="/login">login</Link>
           }
+          <button onClick={handleLogout}>logout</button>
         </div>
 
         <Switch>
