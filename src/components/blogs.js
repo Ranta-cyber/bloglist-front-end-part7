@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Togglable from './../components/Togglable'
 import NewBlog from './../components/blog_form'
-import Blog from './../components/Blog'
+import Blog from './blog'
 import blogService from './../services/blogs'
 import { createBlogReducer, voteBlog, removeBlog } from './../reducers/blogReducer'
+import {
+  Link
+} from "react-router-dom"
 
 const Blogs = ({user}) => {
 
@@ -51,7 +54,17 @@ const Blogs = ({user}) => {
         <NewBlog createBlog={createBlog} />
       </Togglable>
 
-      {blogs.sort(byvotes).map(blog =>
+      <ul>
+          {blogs.sort(byvotes).map(blog =>
+            <li key={blog.id}>
+              <div><Link to={`/blogs/${blog.id}`}>{blog.title}  </Link>
+              </div>
+            </li>
+          )}
+        </ul>
+
+
+      {/* {blogs.sort(byvotes).map(blog =>
         <Blog
           key={blog.id}
           blog={blog}
@@ -59,7 +72,7 @@ const Blogs = ({user}) => {
           handleRemove={handleRemove}
           own={user.username===blog.user.username}
         />
-      )}
+      )} */}
     </div>
   )
 }

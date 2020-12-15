@@ -1,21 +1,23 @@
 import React, { useState } from 'react'
 import './../user.css'
 import {
-  BrowserRouter as Router,
-  Switch, Route, Link
+  useParams
 } from "react-router-dom"
-import Blog from './Blog'
+import Blog from './blog'
 
 
 
 const User = ({ blogs }) => {
-  /* const id = useParams().id
-  const user = user.find(n => n.id === Number(id)) */
+   const id = useParams().id
+  console.log('blogs on:', blogs)
+   console.log('id jolla haetaan:', id)
+  const userblogs = blogs.filter( el => el.user.id === id)
+  
   return (
     <div>
       <h2>  added blogs</h2>
       <ul>
-        {blogs.map(blog =>
+        {userblogs.map(blog =>
           <li key={Blog.id}>
             <div>
               {blog.title}

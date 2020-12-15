@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Notification from './components/Notification'
-import Togglable from './components/Togglable'
 import Users from './components/users'
 import User from './components/user'
 import userService from './services/users'
@@ -11,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
 import { initUser } from './reducers/userReducer'
 import Blogs from './components/blogs'
-import Blog from './components/Blog'
+import Blog from './components/blog'
 import {
   BrowserRouter as Router,
   Switch, Route, Link
@@ -57,8 +55,8 @@ const App = (props) => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-   /*  props.onLogin('mluukkai')
-    history.push('/') */
+    /*  props.onLogin('mluukkai')
+     history.push('/') */
     try {
 
       const user = await loginService.login({
@@ -80,15 +78,15 @@ const App = (props) => {
     storage.logoutUser()
   }
 
- /*  const content = () => {
-    if (page === 'home') {
-      return <Blogs user={user.username} />
-    } else if (page === 'blogs') {
-      return <Blogs user={user.username} />
-    } else if (page === 'users') {
-      return <Users users={users} />
-    }
-  } */
+  /*  const content = () => {
+     if (page === 'home') {
+       return <Blogs user={user.username} />
+     } else if (page === 'blogs') {
+       return <Blogs user={user.username} />
+     } else if (page === 'users') {
+       return <Users users={users} />
+     }
+   } */
 
   //console.log('blogs blogs:', blogs)
   const user = useSelector(state => state.stateuser)
@@ -133,26 +131,29 @@ const App = (props) => {
           <Link style={padding} to="/">home</Link>
           <Link style={padding} to="/blogs">blogs</Link>
           <Link style={padding} to="/users">users</Link>
-           {user
+          {user
             ? <em>{user.name} logged in</em>
             : <Link style={padding} to="/login">login</Link>
-          } 
+          }
         </div>
 
         <Switch>
-           <Route path="/users/:id">
-            <User blogs={blogs} /> 
+          <Route path="/users/:id">
+            <User blogs={blogs} />
+          </Route>
+          <Route path="/blogs/:id">
+            <Blog blogs={blogs} user={user}/>
           </Route>
           <Route path="/blogs">
             <Blogs user={user} />
           </Route>
           <Route path="/users">
             {/* {user ? <Users /> : <Redirect to="/login" />} */}
-            <Users users={users}/>
+            <Users users={users} />
           </Route>
           <Route path="/login">
             {/* <Login onLogin={login} /> */}
-            <Login/>
+            <Login />
           </Route>
           <Route path="/">
             <Home />

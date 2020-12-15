@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
-  Link, Route, Router, Switch
+  Link
 } from "react-router-dom"
 
 
@@ -17,6 +17,8 @@ const Users = ({ users }) => {
             <li key={user.id}>
               <div><Link to={`/users/${user.id}`}>{user.name}  </Link>
                 {user.blogs.length}
+                {console.log('user.name:', user.name)}
+                {console.log('user.blogs:', user.blogs)}
               </div>
             </li>
           )}
