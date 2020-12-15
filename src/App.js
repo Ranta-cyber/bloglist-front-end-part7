@@ -1,52 +1,47 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import NewBlog from './components/blog_form'
 import Users from './components/users'
+import User from './components/user'
 import userService from './services/users'
-
-import blogService from './services/blogs'
 import loginService from './services/login'
 import storage from './utils/storage'
-import {initializeBlogs, createBlogReducer, voteBlog, removeBlog } from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import { useDispatch, useSelector } from 'react-redux'
 import { showNotification } from './reducers/notificationReducer'
-import { initUser} from './reducers/userReducer'
+import { initUser } from './reducers/userReducer'
+import Blogs from './components/blogs'
+import Blog from './components/Blog'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link
+} from "react-router-dom"
 
 var username = null
 var passwordHash = null
 
 const App = (props) => {
 
-
-  //const [blogs, setBlogs] = useState([])
-   //const [user, setUser] = useState(null)
-  //const [username, setUsername] = useState('')
-  //const [passwordHash, setpasswordHash] = useState('') 
-  //const [notification, setNotification] = useState(null)
   const [users, setUsers] = useState([])
+  const [page, setPage] = useState('home')
 
-  const blogFormRef = React.createRef()
+  const toPage = (page) => (event) => {
+    event.preventDefault()
+    setPage(page)
+  }
 
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(initializeBlogs()) 
+    dispatch(initializeBlogs())
     console.log('useEfectissa')
-  },[dispatch])
+  }, [dispatch])
 
   const blogs = useSelector(state => state.stateblog)
-
-  /* useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
-  }, []) */
 
   useEffect(() => {
     userService.getAll().then(users =>
       setUsers(users))
-      console.log('users:', users)
+    console.log('users:', users)
   }, [])
 
   useEffect(() => {
@@ -57,62 +52,25 @@ const App = (props) => {
   }, [])
 
   const notifyWith = (message) => {
-    //console.log('notifyWith:', message)
-    dispatch(showNotification({message}))
+    dispatch(showNotification({ message }))
   }
 
   const handleLogin = async (event) => {
     event.preventDefault()
+   /*  props.onLogin('mluukkai')
+    history.push('/') */
     try {
 
-      console.log('user try username:', username)
-      console.log('user try password:',passwordHash)
-
       const user = await loginService.login({
-        username, passwordHash}
+        username, passwordHash
+      }
       )
       console.log('user:', user)
       dispatch(initUser(user))
-      /* setUsername('')
-      setpasswordHash('')
-      setUser(user) */
       notifyWith(`${user.name} welcome back!`)
       storage.saveUser(user)
-    } catch(exception) {
+    } catch (exception) {
       notifyWith('wrong username/passwordHash', 'error')
-    }
-  }
-
-  const createBlog = async (blog) => {
-    try {
-
-      //console.log('createBlog appj:ssa:', blog)
-      const newBlog = await blogService.create(blog)
-      blogFormRef.current.toggleVisibility()
-      //setBlogs(blogs.concat(newBlog))
-      dispatch(createBlogReducer(newBlog))
-      notifyWith(`a new blog '${newBlog.title}' by ${newBlog.author} added!`)
-    } catch(exception) {
-      console.log(exception)
-    }
-  }
-
-  const handleLike = async (id) => {
-    const blogToLike = blogs.find(b => b.id === id)
-    const likedBlog = { ...blogToLike, votes: blogToLike.votes + 1, user: blogToLike.user.id }
-    dispatch(voteBlog(likedBlog))
-    //await blogService.update(likedBlog)
-    //setBlogs(blogs.map(b => b.id === id ?  { ...blogToLike, votes: blogToLike.votes + 1 } : b))
-    notifyWith(`a new like '${likedBlog.title}' by ${likedBlog.author} added!`)
-  }
-
-  const handleRemove = async (id) => {
-    const blogToRemove = blogs.find(b => b.id === id)
-    const ok = window.confirm(`Remove blog ${blogToRemove.title} by ${blogToRemove.author}`)
-    if (ok) {
-      dispatch(removeBlog(id))
-      //await blogService.remove(id)
-      //setBlogs(blogs.filter(b => b.id !== id))
     }
   }
 
@@ -122,66 +80,107 @@ const App = (props) => {
     storage.logoutUser()
   }
 
-  console.log('blogs blogs:', blogs)
+ /*  const content = () => {
+    if (page === 'home') {
+      return <Blogs user={user.username} />
+    } else if (page === 'blogs') {
+      return <Blogs user={user.username} />
+    } else if (page === 'users') {
+      return <Users users={users} />
+    }
+  } */
+
+  //console.log('blogs blogs:', blogs)
   const user = useSelector(state => state.stateuser)
-  if ( !user)  {
+
+  const padding = {
+    padding: 5
+  }
+
+  const Home = () => (
+    <div> <h2>Blogs app</h2> </div>
+  )
+
+  const Login = (props) => {
+    //const history = useHistory()
     return (
-      <div>
-        <h2>login to application</h2>
-
-        <Notification />
-
-        <form onSubmit={handleLogin} >
-          <div>
-            username
+      <form onSubmit={handleLogin} >
+        <div>
+          username
             <input
-              id='username'
-              //value={username}
-              onChange={({ target }) => username = target.value}
-            />
-          </div>
-          <div>
-            passwordHash
+            id='username'
+            //value={username}
+            onChange={({ target }) => username = target.value}
+          />
+        </div>
+        <div>
+          passwordHash
             <input
-              id='passwordHash'
-              //value={passwordHash}
-              onChange={({ target }) => passwordHash = target.value}
-            />
-          </div>
-          <button id='login'>login</button>
-        </form>
-      </div>
+            id='passwordHash'
+            //value={passwordHash}
+            onChange={({ target }) => passwordHash = target.value}
+          />
+        </div>
+        <button id='login'>login</button>
+      </form>
     )
   }
 
-  const byvotes = (b1, b2) => b2.votes - b1.votes
-  
   return (
     <div>
+      <Router>
+        <div>
+          <Link style={padding} to="/">home</Link>
+          <Link style={padding} to="/blogs">blogs</Link>
+          <Link style={padding} to="/users">users</Link>
+           {user
+            ? <em>{user.name} logged in</em>
+            : <Link style={padding} to="/login">login</Link>
+          } 
+        </div>
+
+        <Switch>
+           <Route path="/users/:id">
+            <User blogs={blogs} /> 
+          </Route>
+          <Route path="/blogs">
+            <Blogs user={user} />
+          </Route>
+          <Route path="/users">
+            {/* {user ? <Users /> : <Redirect to="/login" />} */}
+            <Users users={users}/>
+          </Route>
+          <Route path="/login">
+            {/* <Login onLogin={login} /> */}
+            <Login/>
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </Router>
+      <div></div>
+    </div>
+
+  )
+  {/* return (
+    <div>
       <h2>blogs</h2>
-      <Notification/>
+      <Notification />
 
       <p>
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
 
-      <Users users={users}/>
-
-      <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
-        <NewBlog createBlog={createBlog} />
-      </Togglable>
-
-      {blogs.sort(byvotes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
-          own={user.username===blog.user.username}
-        />
-      )}
+      <a href="" onClick={toPage('blogs')} style={padding}>
+          notes
+        </a>
+        <a href="" onClick={toPage('users')} style={padding}>
+          users
+        </a>
+        {content()}
     </div>
-  )
+  ) */}
 }
 
 export default App
