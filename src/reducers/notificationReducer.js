@@ -22,27 +22,6 @@ const reducerNotif = (stateNotif = '', action) => {
   }
 }
 
-/* export const showNotificationAdd = (text, time) => {
-
-  return async dispatch => {
-    await dispatch(
-      {
-        type: 'SHOW_NEW_ADD',
-        data: { text }
-      }
-    )
-
-    setTimeout(() => {
-      dispatch(
-        {
-          type: 'HIDE_NOTIF',
-          data: ''
-        }
-      )
-    }, (time * 1000))
-  }
-}
- */
 export const showNotification = (text) => {
   console.log('showNotification:', text)
   return async dispatch => {

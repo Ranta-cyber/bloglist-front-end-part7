@@ -1,12 +1,28 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from "react-router-dom"
-import Comments from './../components/comments'
+import { createCommentReducer } from './../reducers/blogReducer'
+import blogService from './../services/blogs'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Blog = ({ blogs, user }) => {
-  const [visible, setVisible] = useState(false)
 
-  //console.log('blogissa:', blog)
+  console.log('state after dispatch is:, ', useSelector(state => state.stateblog))
+
+  const [visible, setVisible] = useState(false)
+  const dispatch = useDispatch()
+
+  const createComment = async (id, comment) => {
+    console.log('createcomment:', comment)
+    try {
+      const newComment = await blogService.postComment(id, comment)
+      dispatch(createCommentReducer(id, comment))
+      
+      //notifyWith(`a new blog '${newBlog.title}' by ${newBlog.author} added!`)
+    } catch (exception) {
+      console.log(exception)
+    }
+  }
 
   const blogStyle = {
     paddingTop: 10,
@@ -17,13 +33,11 @@ const Blog = ({ blogs, user }) => {
   }
 
   const id = useParams().id
+
+console.log('params id:', id)
+
   const blog = blogs.find(n => n.id === id)
-
-  /* console.log('blogs:', blogs)
-  console.log('blog:', blog)
-  console.log('id:', id) */
-
-  //const label = visible ? 'hide' : 'view'
+  var comment = ''
 
   return (
     <div style={blogStyle} className='blog'>
@@ -37,12 +51,21 @@ const Blog = ({ blogs, user }) => {
           <button onClick={() => handleLike(blog.id)}>like</button>
         </div>
         <div>{blog.user.username}</div>
-        {/* <div>{blog.user.name}</div> */}
-        {(blog.user.id===user.id) && <button onClick={() => handleRemove(blog.id)}>remove</button>}
 
-        <div><Comments comments = {blog.comments} /></div>
+        {(blog.user.id === user.id) && <button onClick={() => handleRemove(blog.id)}>remove</button>}
+
+        {blog.comments.map((item, i) => <li key={i}>{item}</li>)}
+        <div>
+          <input
+            id='comment'
+            onChange={({ target }) => comment = target.value}
+          />
+
+          <button onClick={() => createComment(blog.id, comment)}>add comment</button>
+        </div>
       </div>
-      </div>)
+    </div>
+  )
 }
 
 /* Blog.propTypes = {

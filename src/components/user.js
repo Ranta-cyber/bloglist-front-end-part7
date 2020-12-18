@@ -5,14 +5,11 @@ import {
 } from "react-router-dom"
 import Blog from './blog'
 
-
-
 const User = ({ blogs }) => {
-   const id = useParams().id
-  console.log('blogs on:', blogs)
-   console.log('id jolla haetaan:', id)
-  const userblogs = blogs.filter( el => el.user.id === id)
-  
+  const id = useParams().id
+
+  const userblogs = blogs.filter(el => el.user.id === id)
+
   return (
     <div>
       <h2>  added blogs</h2>

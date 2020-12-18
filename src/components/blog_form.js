@@ -8,9 +8,9 @@ const NewBlog = (props) => {
   const handleNewBlog = (event) => {
     event.preventDefault()
 
-     props.createBlog({
+    props.createBlog({
       title, author, url
-    }) 
+    })
 
     setTitle('')
     setAuthor('')

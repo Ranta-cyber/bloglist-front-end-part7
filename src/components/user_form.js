@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const UserForm = (props,ref) => {
+const UserForm = (props, ref) => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [passwordHash, setpasswordHash] = useState('')
@@ -17,7 +17,7 @@ const UserForm = (props,ref) => {
       setUser(user)
       notifyWith(`${user.name} welcome back!`)
       storage.saveUser(user)
-    } catch(exception) {
+    } catch (exception) {
       notifyWith('wrong username/passwordHash', 'error')
     }
   }
@@ -47,7 +47,7 @@ const UserForm = (props,ref) => {
             id='passwordHash'
             value={passwordHash}
             onChange={({ target }) => setpasswordHash(target.value)}
-            
+
           />
         </div>
         <button id='login'>login</button>

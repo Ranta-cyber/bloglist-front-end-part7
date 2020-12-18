@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Togglable from './../components/Togglable'
 import NewBlog from './../components/blog_form'
-import Blog from './blog'
 import blogService from './../services/blogs'
 import { createBlogReducer, voteBlog, removeBlog } from './../reducers/blogReducer'
 import {
   Link
 } from "react-router-dom"
 
-const Blogs = ({user}) => {
+
+const Blogs = ({ user }) => {
+
+  const dispatch = useDispatch()
 
   const blogFormRef = React.createRef()
 
@@ -18,10 +20,9 @@ const Blogs = ({user}) => {
 
   const createBlog = async (blog) => {
     try {
-      //console.log('createBlog appj:ssa:', blog)
+
       const newBlog = await blogService.create(blog)
       blogFormRef.current.toggleVisibility()
-      //setBlogs(blogs.concat(newBlog))
       dispatch(createBlogReducer(newBlog))
       notifyWith(`a new blog '${newBlog.title}' by ${newBlog.author} added!`)
     } catch (exception) {
@@ -48,31 +49,22 @@ const Blogs = ({user}) => {
     }
   }
 
-  return(
+  return (
     <div>
-      <Togglable buttonLabel='create new blog'  ref={blogFormRef}>
+      <Togglable buttonLabel='create new blog' ref={blogFormRef}>
         <NewBlog createBlog={createBlog} />
       </Togglable>
 
       <ul>
-          {blogs.sort(byvotes).map(blog =>
-            <li key={blog.id}>
-              <div><Link to={`/blogs/${blog.id}`}>{blog.title}  </Link>
-              </div>
-            </li>
-          )}
-        </ul>
+        {blogs.sort(byvotes).map(blog =>
+          <li key={blog.id}>
+            <div><Link to={`/blogs/${blog.id}`}>{blog.title} </Link>
+            </div>
 
+          </li>
+        )}
+      </ul>
 
-      {/* {blogs.sort(byvotes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          handleLike={handleLike}
-          handleRemove={handleRemove}
-          own={user.username===blog.user.username}
-        />
-      )} */}
     </div>
   )
 }

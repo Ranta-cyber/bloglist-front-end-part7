@@ -18,17 +18,18 @@ import {
 var username = null
 var passwordHash = null
 
+
 const App = (props) => {
 
   const [users, setUsers] = useState([])
   const [page, setPage] = useState('home')
+  const dispatch = useDispatch()
 
   const toPage = (page) => (event) => {
     event.preventDefault()
     setPage(page)
   }
 
-  const dispatch = useDispatch()
   useEffect(() => {
     dispatch(initializeBlogs())
     console.log('useEfectissa')
@@ -39,14 +40,14 @@ const App = (props) => {
   useEffect(() => {
     userService.getAll().then(users =>
       setUsers(users))
-    console.log('users:', users)
+    //console.log('users:', users)
   }, [])
 
   useEffect(() => {
     const user = storage.loadUser()
     dispatch(initUser(user))
     console.log('user is in effect:', user)
-    //setUser(user)
+
   }, [])
 
   const notifyWith = (message) => {
@@ -55,7 +56,7 @@ const App = (props) => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    /*  props.onLogin('mluukkai')
+    /*  props.onLogin('user')
      history.push('/') */
     try {
 
@@ -73,22 +74,11 @@ const App = (props) => {
   }
 
   const handleLogout = () => {
-    //setUser(null)
+
     dispatch(initUser(null))
     storage.logoutUser()
   }
 
-  /*  const content = () => {
-     if (page === 'home') {
-       return <Blogs user={user.username} />
-     } else if (page === 'blogs') {
-       return <Blogs user={user.username} />
-     } else if (page === 'users') {
-       return <Users users={users} />
-     }
-   } */
-
-  //console.log('blogs blogs:', blogs)
   const user = useSelector(state => state.stateuser)
 
   const padding = {
@@ -143,7 +133,7 @@ const App = (props) => {
             <User blogs={blogs} />
           </Route>
           <Route path="/blogs/:id">
-            <Blog blogs={blogs} user={user}/>
+            <Blog blogs={blogs} user={user} />
           </Route>
           <Route path="/blogs">
             <Blogs user={user} />
@@ -165,24 +155,5 @@ const App = (props) => {
     </div>
 
   )
-  {/* return (
-    <div>
-      <h2>blogs</h2>
-      <Notification />
-
-      <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
-
-      <a href="" onClick={toPage('blogs')} style={padding}>
-          notes
-        </a>
-        <a href="" onClick={toPage('users')} style={padding}>
-          users
-        </a>
-        {content()}
-    </div>
-  ) */}
 }
-
 export default App
