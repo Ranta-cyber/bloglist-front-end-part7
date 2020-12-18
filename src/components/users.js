@@ -2,42 +2,35 @@ import React, { useState, useEffect } from 'react'
 import {
   Link
 } from "react-router-dom"
-
+import './../user.css'
 
 const Users = ({ users }) => {
+  const padding = { padding: 5 }
 
-  console.log('User ja:', users)
   return (
     <div>
-      <h2>Users</h2>
-      <div><h3>blogs created</h3></div>
-
-        <ul>
-          {users.map(user =>
-            <li key={user.id}>
-              <div><Link to={`/users/${user.id}`}>{user.name}  </Link>
-                {user.blogs.length}
-                {console.log('user.name:', user.name)}
-                {console.log('user.blogs:', user.blogs)}
+      <br></br>
+      <div id='wrapper'>
+        <div id='first-div'>Users</div>
+        <div id='second-div'>blogs created</div>
+      </div>
+      <br></br><br></br>
+      <ul>
+        {users.map(user =>
+          <li key={user.id}>
+            <div id='wrapper'>
+              <div id='first-div'>
+                <Link style={padding} to={`/users/${user.id}`} >{user.name}
+                </Link>
               </div>
-            </li>
-          )}
-        </ul>
-
-      {/* {users.map(user =>
-          <User key={user.id}
-            usrname={user.name}
-            username={user.username}
-            countBlogs={user.blogs.length}
-            blogs={user.blogs}
-          />
-        )
-        } */}
+              <div id='second-div'>  {user.blogs.length}</div>
+            </div>
+          </li>
+        )}
+      </ul>
     </div>
   )
 }
-
-
 /* const User = ({ id, usrname, username, countBlogs, blogs }) => {
   const padding = { padding: 5 }
   return (

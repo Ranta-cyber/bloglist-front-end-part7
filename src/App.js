@@ -10,10 +10,11 @@ import { showNotification } from './reducers/notificationReducer'
 import { initUser } from './reducers/userReducer'
 import Blogs from './components/blogs'
 import Blog from './components/blog'
+import Notification from './components/Notification'
 import {
   BrowserRouter as Router,
   Switch, Route, Link
-} from "react-router-dom"
+} from 'react-router-dom'
 
 var username = null
 var passwordHash = null
@@ -23,12 +24,8 @@ const App = (props) => {
 
   const [users, setUsers] = useState([])
   const [page, setPage] = useState('home')
+  
   const dispatch = useDispatch()
-
-  const toPage = (page) => (event) => {
-    event.preventDefault()
-    setPage(page)
-  }
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -126,6 +123,7 @@ const App = (props) => {
             : <Link style={padding} to="/login">login</Link>
           }
           <button onClick={handleLogout}>logout</button>
+          <div><Notification/></div>
         </div>
 
         <Switch>

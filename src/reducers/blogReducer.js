@@ -39,18 +39,14 @@ const reducerBlog = (state = [], action) => {
 
       return state.map(blog =>
         blog.id !== action.data.id ? blog : newBlog)
-
     }
 
     case 'REMOVE': {
-
       const id = action.data.id
       return state.filter(b => b.id !== id)
-
     }
 
     case 'INCREMENT': {
-
       const id = action.data.content.id
       const blogToChange = state.find(n => n.id === id)
       const changedBlog = {
@@ -130,7 +126,7 @@ const generateId = () =>
 export const createBlogReducer = (content) => {
 
   return async dispatch => {
-    const newBlog = await blogService.create(content)
+    //const newBlog = await blogService.create(content)
     dispatch(
       {
         type: 'NEW_BLOG',
