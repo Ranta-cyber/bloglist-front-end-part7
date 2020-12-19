@@ -15,7 +15,7 @@ import {
   BrowserRouter as Router,
   Switch, Route, Link
 } from 'react-router-dom'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Navbar, Nav } from 'react-bootstrap'
 
 var username = null
 var passwordHash = null
@@ -105,8 +105,8 @@ const App = (props) => {
               id='passwordHash'
               onChange={({ target }) => passwordHash = target.value}
             />
-          <Button variant="primary" id='login' type="submit">
-            login
+            <Button variant="primary" id='login' type="submit">
+              login
           </Button>
           </Form.Group>
         </form >
@@ -114,48 +114,61 @@ const App = (props) => {
     )
   }
 
-return (
-  <div class="container">
-    <div>
-      <Router>
-        <div>
-          <Link style={padding} to="/">home</Link>
-          <Link style={padding} to="/blogs">blogs</Link>
-          <Link style={padding} to="/users">users</Link>
-          {user
-            ? <em>{user.name} logged in </em>
-            : <Link style={padding} to="/login">login</Link>
-          }
-          <button onClick={handleLogout}>logout</button>
-          <div><Notification /></div>
-        </div>
+  return (
+    <div class="container">
+      <div>
+        <Router>
+          
+            <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+              <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="mr-auto">
+                  <Nav.Link href="#" as="span">
+                    <Link style={padding} to="/">home</Link>
+                    <Nav.Link href="#" as="span"></Nav.Link>
+                    <Link style={padding} to="/blogs">blogs</Link>
+                    <Nav.Link href="#" as="span"></Nav.Link>
+                    <Link style={padding} to="/users">users</Link>
+                    {user
+                      ? <em>{user.name} logged in </em>
+                      : <Link style={padding} to="/login">login</Link>
+                    }
+                  </Nav.Link>
+                </Nav>
+              </Navbar.Collapse>
+            </Navbar>
+          
+          <div>
+            <button onClick={handleLogout}>logout</button>
+            <div><Notification /></div>
+          </div>
 
-        <Switch>
-          <Route path="/users/:id">
-            <User blogs={blogs} />
-          </Route>
-          <Route path="/blogs/:id">
-            <Blog blogs={blogs} user={user} />
-          </Route>
-          <Route path="/blogs">
-            <Blogs user={user} />
-          </Route>
-          <Route path="/users">
-            {/* {user ? <Users /> : <Redirect to="/login" />} */}
-            <Users users={users} />
-          </Route>
-          <Route path="/login">
-            {/* <Login onLogin={login} /> */}
-            <Login />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </Router>
-      <div></div>
+          <Switch>
+            <Route path="/users/:id">
+              <User blogs={blogs} />
+            </Route>
+            <Route path="/blogs/:id">
+              <Blog blogs={blogs} user={user} />
+            </Route>
+            <Route path="/blogs">
+              <Blogs user={user} />
+            </Route>
+            <Route path="/users">
+              {/* {user ? <Users /> : <Redirect to="/login" />} */}
+              <Users users={users} />
+            </Route>
+            <Route path="/login">
+              {/* <Login onLogin={login} /> */}
+              <Login />
+            </Route>
+            <Route path="/">
+              <Home />
+            </Route>
+          </Switch>
+        </Router>
+        <div></div>
+      </div>
     </div>
-  </div>
-)
+  )
 }
 export default App
