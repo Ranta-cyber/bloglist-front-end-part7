@@ -15,6 +15,7 @@ import {
   BrowserRouter as Router,
   Switch, Route, Link
 } from 'react-router-dom'
+import { Form, Button } from 'react-bootstrap'
 
 var username = null
 var passwordHash = null
@@ -24,7 +25,7 @@ const App = (props) => {
 
   const [users, setUsers] = useState([])
   const [page, setPage] = useState('home')
-  
+
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -89,29 +90,32 @@ const App = (props) => {
   const Login = (props) => {
     //const history = useHistory()
     return (
-      <form onSubmit={handleLogin} >
-        <div>
-          username
-            <input
-            id='username'
-            //value={username}
-            onChange={({ target }) => username = target.value}
-          />
-        </div>
-        <div>
-          passwordHash
-            <input
-            id='passwordHash'
-            //value={passwordHash}
-            onChange={({ target }) => passwordHash = target.value}
-          />
-        </div>
-        <button id='login'>login</button>
-      </form>
+      <div>
+        <form onSubmit={handleLogin} >
+          <Form.Group>
+            <Form.Label>username</Form.Label>
+            <Form.Control
+              id='username'
+              //value={username}
+              onChange={({ target }) => username = target.value}
+            />
+
+            <Form.Label>passwordHash</Form.Label>
+            <Form.Control
+              id='passwordHash'
+              onChange={({ target }) => passwordHash = target.value}
+            />
+          <Button variant="primary" id='login' type="submit">
+            login
+          </Button>
+          </Form.Group>
+        </form >
+      </div >
     )
   }
 
-  return (
+return (
+  <div class="container">
     <div>
       <Router>
         <div>
@@ -123,7 +127,7 @@ const App = (props) => {
             : <Link style={padding} to="/login">login</Link>
           }
           <button onClick={handleLogout}>logout</button>
-          <div><Notification/></div>
+          <div><Notification /></div>
         </div>
 
         <Switch>
@@ -151,7 +155,7 @@ const App = (props) => {
       </Router>
       <div></div>
     </div>
-
-  )
+  </div>
+)
 }
 export default App

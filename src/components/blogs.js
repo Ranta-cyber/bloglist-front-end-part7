@@ -8,11 +8,12 @@ import {
   Link
 } from "react-router-dom"
 import { showNotification } from './../reducers/notificationReducer'
+import { Table } from 'react-bootstrap'
 
-const Blogs = ( { user }) => {
+const Blogs = ({ user }) => {
 
   const dispatch = useDispatch()
-  
+
   const blogFormRef = React.createRef()
 
   var blogs = useSelector(state => state.stateblog)
@@ -28,10 +29,10 @@ const Blogs = ( { user }) => {
       console.log('newblog:', newBlog)
       blogFormRef.current.toggleVisibility()
       dispatch(createBlogReducer(newBlog))
-      
+
       //blogs = blogs.concat(newBlog)
       notifyWith(`a new blog '${newBlog.title}' by ${newBlog.author} added!`)
-      
+
     } catch (exception) {
       console.log(exception)
     }
@@ -43,20 +44,24 @@ const Blogs = ( { user }) => {
         <NewBlog createBlog={createBlog} />
       </Togglable>
 
-      <ul>
-        {blogs.sort(byvotes).map(blog =>
-          <li key={blog.id}>
-            <div><Link to={
-              {
-                pathname: `/blogs/${blog.id}`
-                
-              }}> { blog.title } </Link>
-            </div>
+      <Table striped>
+        <tbodi>
+          <ul>
+            {blogs.sort(byvotes).map(blog =>
+              <tr key={blog.id}>
+                <td>
+                  <Link to={
+                    {
+                      pathname: `/blogs/${blog.id}`
 
-          </li>
-        )}
-      </ul>
-
+                    }}> {blog.title} </Link>
+                  
+                </td>
+              </tr>
+            )}
+          </ul>
+        </tbodi>
+      </Table>
     </div>
   )
 }
